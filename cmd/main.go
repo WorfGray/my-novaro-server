@@ -12,6 +12,15 @@ import (
 
 func init() {
 	config.Init()
+	db := config.DB
+	db.AutoMigrate(&model.Collections{})
+	db.AutoMigrate(&model.Comments{})
+	db.AutoMigrate(&model.Posts{})
+	db.AutoMigrate(&model.RePosts{})
+	db.AutoMigrate(&model.Tags{})
+	db.AutoMigrate(&model.TagsRecords{})
+	db.AutoMigrate(&model.Users{})
+	db.AutoMigrate(&model.TwitterUser{})
 }
 func main() {
 
@@ -28,42 +37,42 @@ func main() {
 	r := gin.Default()
 	// 使用gin-swagger中间件来提供API文档
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Group("/api/collections")
+	collections := r.Group("/api/collections")
 	{
-		r.POST("/add", api.CollectionsApi{}.CollectionsTweet)
-		r.POST("/remove", api.CollectionsApi{}.UnCollectionsTweet)
+		collections.POST("/add", api.CollectionsApi{}.CollectionsTweet)
+		collections.POST("/remove", api.CollectionsApi{}.UnCollectionsTweet)
 	}
 
-	r.Group("/api/comments")
+	comments := r.Group("/api/comments")
 	{
-		r.GET("/getCommentsListByPostId", api.CommentsApi{}.GetCommentsListByPostId)
-		r.GET("/getCommentsListByParentId", api.CommentsApi{}.GetCommentsListByParentId)
-		r.GET("/getCommentsListByUserId", api.CommentsApi{}.GetCommentsListByUserId)
-		r.POST("/add", api.CommentsApi{}.AddComments)
+		comments.GET("/getCommentsListByPostId", api.CommentsApi{}.GetCommentsListByPostId)
+		comments.GET("/getCommentsListByParentId", api.CommentsApi{}.GetCommentsListByParentId)
+		comments.GET("/getCommentsListByUserId", api.CommentsApi{}.GetCommentsListByUserId)
+		comments.POST("/add", api.CommentsApi{}.AddComments)
 	}
 
-	r.Group("/api/posts")
+	posts := r.Group("/api/posts")
 	{
-		r.GET("/getPostsById", api.PostsApi{}.GetPostsById)
-		r.GET("/getPostsByUserId", api.PostsApi{}.GetPostsByUserId)
-		r.GET("/getPostsList", api.PostsApi{}.GetPostsList)
-		r.POST("/savePosts", api.PostsApi{}.SavePosts)
-		r.DELETE("/delPostsById", api.PostsApi{}.DelPostsById)
+		posts.GET("/getPostsById", api.PostsApi{}.GetPostsById)
+		posts.GET("/getPostsByUserId", api.PostsApi{}.GetPostsByUserId)
+		posts.GET("/getPostsList", api.PostsApi{}.GetPostsList)
+		posts.POST("/savePosts", api.PostsApi{}.SavePosts)
+		posts.DELETE("/delPostsById", api.PostsApi{}.DelPostsById)
 	}
 
-	r.Group("/api/reposts")
+	reposts := r.Group("/api/reposts")
 	{
-		r.POST("/add", api.RePostsApi{}.AddRePosts)
+		reposts.POST("/add", api.RePostsApi{}.AddRePosts)
 	}
 
-	r.Group("/api/tags")
+	tags := r.Group("/api/tags")
 	{
-		r.GET("/getTagsList", api.TagsApi{}.GetTagsList)
+		tags.GET("/getTagsList", api.TagsApi{}.GetTagsList)
 	}
 
-	r.Group("/api/tags/records")
+	records := r.Group("/api/tags/records")
 	{
-		r.GET("/add", api.TagsRecordsApi{}.AddTagsRecords)
+		records.GET("/add", api.TagsRecordsApi{}.AddTagsRecords)
 	}
 
 	r.Run()

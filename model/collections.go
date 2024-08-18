@@ -11,7 +11,7 @@ import (
 // TODO 更新，每次收藏都更新数据库
 
 type Collections struct {
-	Id        string    `json:"id"`
+	Id        string    `json:"id" gorm:"primaryKey"`
 	UserId    string    `json:"userId"`
 	PostId    string    `json:"postId"`
 	createdAt time.Time `json:"createdAt"`
